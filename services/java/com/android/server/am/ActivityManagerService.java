@@ -187,8 +187,8 @@ public final class ActivityManagerService extends ActivityManagerNative
     static final boolean DEBUG_BROADCAST = localLOGV || false;
     static final boolean DEBUG_BACKGROUND_BROADCAST = DEBUG_BROADCAST || false;
     static final boolean DEBUG_BROADCAST_LIGHT = DEBUG_BROADCAST || false;
-    static final boolean DEBUG_SERVICE = localLOGV || false;
-    static final boolean DEBUG_SERVICE_EXECUTING = localLOGV || false;
+    static final boolean DEBUG_SERVICE = localLOGV || true;
+    static final boolean DEBUG_SERVICE_EXECUTING = localLOGV || true;
     static final boolean DEBUG_VISBILITY = localLOGV || false;
     static final boolean DEBUG_PROCESSES = localLOGV || false;
     static final boolean DEBUG_PROCESS_OBSERVERS = localLOGV || false;
@@ -12686,7 +12686,7 @@ public final class ActivityManagerService extends ActivityManagerNative
 
         Log.v(TAG, "getCSActivityFromStack(" + token + ")"); 
 
-    if(token == null) return null;
+
                 /**
                  * Author: Onskreen
                  * Date: 27/01/2011
@@ -12694,6 +12694,8 @@ public final class ActivityManagerService extends ActivityManagerNative
                  * Choosing between stacks
                  */
                 int stack = getActivityStack(token);
+        Log.v(TAG, "getCSActivityFromStack: stack="+ stack ); 
+
                 ActivityStack targetStack = null;
                 //Cornerstone Panel
                 if(stack >= 0) {

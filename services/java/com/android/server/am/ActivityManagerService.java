@@ -12685,6 +12685,9 @@ public final class ActivityManagerService extends ActivityManagerNative
     }
 
     public ActivityRecord getCSActivityFromStack(IBinder token) {
+
+        Log.v(TAG, "getCSActivityFromStack(" + token + ")"); 
+
     if(token == null) return null;
                 /**
                  * Author: Onskreen

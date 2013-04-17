@@ -22,11 +22,9 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import com.android.internal.app.HeavyWeightSwitcherActivity;
 import com.android.internal.os.BatteryStatsImpl;
 import com.android.server.am.ActivityManagerService.PendingActivityLaunch;
-<<<<<<< HEAD
-import com.android.server.power.PowerManagerService;
-=======
+
 import com.android.server.wm.WindowManagerService;
->>>>>>> ba3e09d... Raw Cornerstone patch with conflicts
+import com.android.server.power.PowerManagerService;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -1662,11 +1660,7 @@ final class ActivityStack {
     }
 
     final boolean resumeTopActivityLocked(ActivityRecord prev, Bundle options) {
-<<<<<<< HEAD
-
         mPm.cpuBoost(1500000);
-
-=======
         /**
          * Author: Onskreen
          * Date: 23/02/2011
@@ -1694,7 +1688,6 @@ final class ActivityStack {
          */
         ActivityRecord next = null;
         if(mMainStack || mCornerstonePanelStack || mCornerstoneStack) {
->>>>>>> ba3e09d... Raw Cornerstone patch with conflicts
         // Find the first activity that is not finishing.
             next = topRunningActivityLocked(null);
         }

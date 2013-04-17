@@ -172,13 +172,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-<<<<<<< HEAD
-import java.util.List;
-=======
+
 import java.util.ArrayList;
 
-import org.teameos.jellybean.settings.*;
->>>>>>> ba3e09d... Raw Cornerstone patch with conflicts
+
+
 
 /**
  * WindowManagerPolicy implementation for the Android phone UI.  This

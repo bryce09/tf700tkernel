@@ -1,18 +1,18 @@
 /*
-* Copyright (C) 2007 The Android Open Source Project
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright (C) 2007 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.android.server.wm;
 
@@ -193,154 +193,154 @@ import java.util.NoSuchElementException;
 public class WindowManagerService extends IWindowManager.Stub
         implements Watchdog.Monitor, WindowManagerPolicy.WindowManagerFuncs,
                 DisplayManagerService.WindowManagerFuncs, DisplayManager.DisplayListener {
-static final String TAG = "WindowManager";
-static final boolean DEBUG = false;
-static final boolean DEBUG_ADD_REMOVE = true;
-static final boolean DEBUG_FOCUS = true;
-static final boolean DEBUG_ANIM = true;
-static final boolean DEBUG_LAYOUT = true;
-static final boolean DEBUG_RESIZE = true;
-static final boolean DEBUG_LAYERS = false;
-static final boolean DEBUG_INPUT = false;
-static final boolean DEBUG_INPUT_METHOD = false;
-static final boolean DEBUG_VISIBILITY = true;
-static final boolean DEBUG_WINDOW_MOVEMENT = true;
-static final boolean DEBUG_TOKEN_MOVEMENT = true;
-static final boolean DEBUG_ORIENTATION = true;
-static final boolean DEBUG_APP_ORIENTATION = false;
-static final boolean DEBUG_CONFIGURATION = false;
-static final boolean DEBUG_APP_TRANSITIONS = true;
-static final boolean DEBUG_STARTING_WINDOW = true;
-static final boolean DEBUG_REORDER = true;
-static final boolean DEBUG_WALLPAPER = false;
-static final boolean DEBUG_WALLPAPER_LIGHT = false || DEBUG_WALLPAPER;
-static final boolean DEBUG_DRAG = false;
-static final boolean DEBUG_SCREEN_ON = false;
-static final boolean DEBUG_SCREENSHOT = false;
-static final boolean DEBUG_BOOT = false;
-static final boolean DEBUG_LAYOUT_REPEATS = true;
-static final boolean DEBUG_SURFACE_TRACE = false;
-static final boolean DEBUG_WINDOW_TRACE = true;
-static final boolean SHOW_SURFACE_ALLOC = false;
-static final boolean SHOW_TRANSACTIONS = true;
-static final boolean SHOW_LIGHT_TRANSACTIONS = true || SHOW_TRANSACTIONS;
-static final boolean HIDE_STACK_CRAWLS = true;
-static final int LAYOUT_REPEAT_THRESHOLD = 4;
+    static final String TAG = "WindowManager";
+    static final boolean DEBUG = false;
+    static final boolean DEBUG_ADD_REMOVE = true;
+    static final boolean DEBUG_FOCUS = true;
+    static final boolean DEBUG_ANIM = false;
+    static final boolean DEBUG_LAYOUT = true;
+    static final boolean DEBUG_RESIZE = true;
+    static final boolean DEBUG_LAYERS = false;
+    static final boolean DEBUG_INPUT = false;
+    static final boolean DEBUG_INPUT_METHOD = false;
 
-/**
-* Author: Onskreen
-* Date: 24/01/2011
-*
-* Debug flag for cornerstone specific logic
-*/
-static final boolean DEBUG_WP_POSITIONS = true;
-static final boolean DEBUG_WP_GROUPING = true;
-static final boolean DEBUG_WP_CONFIG = false;
-static final boolean DEBUG_CORNERSTONE = true;
+    static final boolean DEBUG_VISIBILITY = true;
+    static final boolean DEBUG_WINDOW_MOVEMENT = true;
+    static final boolean DEBUG_TOKEN_MOVEMENT = true;
+    static final boolean DEBUG_ORIENTATION = true;
 
+    static final boolean DEBUG_APP_ORIENTATION = false;
+    static final boolean DEBUG_CONFIGURATION = false;
+    static final boolean DEBUG_APP_TRANSITIONS = false;
+    static final boolean DEBUG_STARTING_WINDOW = false;
+    static final boolean DEBUG_REORDER = true;
+    static final boolean DEBUG_WALLPAPER = false;
+    static final boolean DEBUG_WALLPAPER_LIGHT = false || DEBUG_WALLPAPER;
+    static final boolean DEBUG_DRAG = false;
+    static final boolean DEBUG_SCREEN_ON = false;
+    static final boolean DEBUG_SCREENSHOT = false;
+    static final boolean DEBUG_BOOT = false;
+    static final boolean DEBUG_LAYOUT_REPEATS = true;
+    static final boolean DEBUG_SURFACE_TRACE = false;
+    static final boolean DEBUG_WINDOW_TRACE = true;
+    static final boolean SHOW_SURFACE_ALLOC = false;
+    static final boolean SHOW_TRANSACTIONS = true;
+    static final boolean SHOW_LIGHT_TRANSACTIONS = false || SHOW_TRANSACTIONS;
+    static final boolean HIDE_STACK_CRAWLS = true;
+    static final int LAYOUT_REPEAT_THRESHOLD = 4;
 
-
-static final boolean PROFILE_ORIENTATION = false;
-static final boolean localLOGV = DEBUG;
-
-/** How much to multiply the policy's type layer, to reserve room
-* for multiple windows of the same type and Z-ordering adjustment
-* with TYPE_LAYER_OFFSET. */
-static final int TYPE_LAYER_MULTIPLIER = 10000;
-
-/** Offset from TYPE_LAYER_MULTIPLIER for moving a group of windows above
-* or below others in the same layer. */
-static final int TYPE_LAYER_OFFSET = 1000;
-
-/** How much to increment the layer for each window, to reserve room
-* for effect surfaces between them.
-*/
-static final int WINDOW_LAYER_MULTIPLIER = 5;
-
-/**
-* Dim surface layer is immediately below target window.
-*/
-static final int LAYER_OFFSET_DIM = 1;
-
-/**
-* Blur surface layer is immediately below dim layer.
-*/
-static final int LAYER_OFFSET_BLUR = 2;
-
-/**
-* Animation thumbnail is as far as possible below the window above
-* the thumbnail (or in other words as far as possible above the window
-* below it).
-*/
-static final int LAYER_OFFSET_THUMBNAIL = WINDOW_LAYER_MULTIPLIER-1;
-
-/**
-* Layer at which to put the rotation freeze snapshot.
-*/
-static final int FREEZE_LAYER = (TYPE_LAYER_MULTIPLIER * 200) + 1;
-
-/**
-* Layer at which to put the mask for emulated screen sizes.
-*/
-static final int MASK_LAYER = TYPE_LAYER_MULTIPLIER * 200;
-
-/** The maximum length we will accept for a loaded animation duration:
-* this is 10 seconds.
-*/
-static final int MAX_ANIMATION_DURATION = 10*1000;
-
-/** Amount of time (in milliseconds) to animate the dim surface from one
-* value to another, when no window animation is driving it.
-*/
-static final int DEFAULT_DIM_DURATION = 200;
-
-/** Amount of time (in milliseconds) to animate the fade-in-out transition for
-* compatible windows.
-*/
-static final int DEFAULT_FADE_IN_OUT_DURATION = 400;
-
-/** Amount of time (in milliseconds) to delay before declaring a window freeze timeout. */
-static final int WINDOW_FREEZE_TIMEOUT_DURATION = 2000;
-
-/** Fraction of animation at which the recents thumbnail becomes completely transparent */
-static final float RECENTS_THUMBNAIL_FADEOUT_FRACTION = 0.25f;
-
-/**
-* If true, the window manager will do its own custom freezing and general
-* management of the screen during rotation.
-*/
-static final boolean CUSTOM_SCREEN_ROTATION = true;
-
-// Maximum number of milliseconds to wait for input devices to be enumerated before
-// proceding with safe mode detection.
-private static final int INPUT_DEVICES_READY_FOR_SAFE_MODE_DETECTION_TIMEOUT_MILLIS = 1000;
-
-// Default input dispatching timeout in nanoseconds.
-static final long DEFAULT_INPUT_DISPATCHING_TIMEOUT_NANOS = 5000 * 1000000L;
-
-static final int UPDATE_FOCUS_NORMAL = 0;
-static final int UPDATE_FOCUS_WILL_ASSIGN_LAYERS = 1;
-static final int UPDATE_FOCUS_PLACING_SURFACES = 2;
-static final int UPDATE_FOCUS_WILL_PLACE_SURFACES = 3;
-
-private static final String SYSTEM_SECURE = "ro.secure";
-private static final String SYSTEM_DEBUGGABLE = "ro.debuggable";
-
-final private KeyguardDisableHandler mKeyguardDisableHandler;
-
-private final boolean mHeadless;
+    /**
+     * Author: Onskreen
+     * Date: 24/01/2011
+     *
+     * Debug flag for cornerstone specific logic
+     */
+    static final boolean DEBUG_WP_POSITIONS = true;
+    static final boolean DEBUG_WP_GROUPING = true;
+    static final boolean DEBUG_WP_CONFIG = false;
+    static final boolean DEBUG_CORNERSTONE = true;
 
 
-private static final float THUMBNAIL_ANIMATION_DECELERATE_FACTOR = 1.5f;
+    static final boolean PROFILE_ORIENTATION = false;
+    static final boolean localLOGV = DEBUG;
+
+    /** How much to multiply the policy's type layer, to reserve room
+     * for multiple windows of the same type and Z-ordering adjustment
+     * with TYPE_LAYER_OFFSET. */
+    static final int TYPE_LAYER_MULTIPLIER = 10000;
+
+    /** Offset from TYPE_LAYER_MULTIPLIER for moving a group of windows above
+     * or below others in the same layer. */
+    static final int TYPE_LAYER_OFFSET = 1000;
+
+    /** How much to increment the layer for each window, to reserve room
+     * for effect surfaces between them.
+     */
+    static final int WINDOW_LAYER_MULTIPLIER = 5;
+
+    /**
+     * Dim surface layer is immediately below target window.
+     */
+    static final int LAYER_OFFSET_DIM = 1;
+
+    /**
+     * Blur surface layer is immediately below dim layer.
+     */
+    static final int LAYER_OFFSET_BLUR = 2;
+
+    /**
+     * Animation thumbnail is as far as possible below the window above
+     * the thumbnail (or in other words as far as possible above the window
+     * below it).
+     */
+    static final int LAYER_OFFSET_THUMBNAIL = WINDOW_LAYER_MULTIPLIER-1;
+
+    /**
+     * Layer at which to put the rotation freeze snapshot.
+     */
+    static final int FREEZE_LAYER = (TYPE_LAYER_MULTIPLIER * 200) + 1;
+
+    /**
+     * Layer at which to put the mask for emulated screen sizes.
+     */
+    static final int MASK_LAYER = TYPE_LAYER_MULTIPLIER * 200;
+
+    /** The maximum length we will accept for a loaded animation duration:
+     * this is 10 seconds.
+     */
+    static final int MAX_ANIMATION_DURATION = 10*1000;
+
+    /** Amount of time (in milliseconds) to animate the dim surface from one
+     * value to another, when no window animation is driving it.
+     */
+    static final int DEFAULT_DIM_DURATION = 200;
+
+    /** Amount of time (in milliseconds) to animate the fade-in-out transition for
+     * compatible windows.
+     */
+    static final int DEFAULT_FADE_IN_OUT_DURATION = 400;
+
+    /** Amount of time (in milliseconds) to delay before declaring a window freeze timeout. */
+    static final int WINDOW_FREEZE_TIMEOUT_DURATION = 2000;
+
+    /** Fraction of animation at which the recents thumbnail becomes completely transparent */
+    static final float RECENTS_THUMBNAIL_FADEOUT_FRACTION = 0.25f;
+
+    /**
+     * If true, the window manager will do its own custom freezing and general
+     * management of the screen during rotation.
+     */
+    static final boolean CUSTOM_SCREEN_ROTATION = true;
+
+    // Maximum number of milliseconds to wait for input devices to be enumerated before
+    // proceding with safe mode detection.
+    private static final int INPUT_DEVICES_READY_FOR_SAFE_MODE_DETECTION_TIMEOUT_MILLIS = 1000;
+
+    // Default input dispatching timeout in nanoseconds.
+    static final long DEFAULT_INPUT_DISPATCHING_TIMEOUT_NANOS = 5000 * 1000000L;
+
+    static final int UPDATE_FOCUS_NORMAL = 0;
+    static final int UPDATE_FOCUS_WILL_ASSIGN_LAYERS = 1;
+    static final int UPDATE_FOCUS_PLACING_SURFACES = 2;
+    static final int UPDATE_FOCUS_WILL_PLACE_SURFACES = 3;
+
+    private static final String SYSTEM_SECURE = "ro.secure";
+    private static final String SYSTEM_DEBUGGABLE = "ro.debuggable";
+
+    final private KeyguardDisableHandler mKeyguardDisableHandler;
+
+    private final boolean mHeadless;
+
+    private static final float THUMBNAIL_ANIMATION_DECELERATE_FACTOR = 1.5f;
 
 
-private BroadcastReceiver mThemeChangeReceiver = new BroadcastReceiver() {
-public void onReceive(Context context, Intent intent) {
-    mUiContext = null;
-}
-};
+    private BroadcastReceiver mThemeChangeReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            mUiContext = null;
+        }
+    };
 
-final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
+    final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
@@ -363,286 +363,289 @@ final BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
 
     final boolean mLimitedAlphaCompositing;
 
-    final WindowManagerPolicy mPolicy = PolicyManager.makeNewWindowManager();
+    final WindowManagerPolicy mPolicy;
 
     final IActivityManager mActivityManager;
 
     final IBatteryStats mBatteryStats;
-/**
-* All currently active sessions with clients.
-*/
-final HashSet<Session> mSessions = new HashSet<Session>();
 
-/**
-* Mapping from an IWindow IBinder to the server's Window object.
-* This is also used as the lock for all of our state.
-*/
-final HashMap<IBinder, WindowState> mWindowMap = new HashMap<IBinder, WindowState>();
+    /**
+     * All currently active sessions with clients.
+     */
+    final HashSet<Session> mSessions = new HashSet<Session>();
 
-/**
-* Mapping from a token IBinder to a WindowToken object.
-*/
-final HashMap<IBinder, WindowToken> mTokenMap =
-    new HashMap<IBinder, WindowToken>();
+    /**
+     * Mapping from an IWindow IBinder to the server's Window object.
+     * This is also used as the lock for all of our state.
+     */
+    final HashMap<IBinder, WindowState> mWindowMap = new HashMap<IBinder, WindowState>();
 
-/**
-* Window tokens that are in the process of exiting, but still
-* on screen for animations.
-*/
-final ArrayList<WindowToken> mExitingTokens = new ArrayList<WindowToken>();
+    /**
+     * Mapping from a token IBinder to a WindowToken object.
+     */
+    final HashMap<IBinder, WindowToken> mTokenMap =
+            new HashMap<IBinder, WindowToken>();
 
-/**
-* List controlling the ordering of windows in different applications which must
-* be kept in sync with ActivityManager.
-*/
-final ArrayList<AppWindowToken> mAppTokens = new ArrayList<AppWindowToken>();
+    /**
+     * Window tokens that are in the process of exiting, but still
+     * on screen for animations.
+     */
+    final ArrayList<WindowToken> mExitingTokens = new ArrayList<WindowToken>();
 
-/**
-* AppWindowTokens in the Z order they were in at the start of an animation. Between
-* animations this list is maintained in the exact order of mAppTokens. If tokens
-* are added to mAppTokens during an animation an attempt is made to insert them at the same
-* logical location in this list. Note that this list is always in sync with mWindows.
-*/
-ArrayList<AppWindowToken> mAnimatingAppTokens = new ArrayList<AppWindowToken>();
+    /**
+     * List controlling the ordering of windows in different applications which must
+     * be kept in sync with ActivityManager.
+     */
+    final ArrayList<AppWindowToken> mAppTokens = new ArrayList<AppWindowToken>();
 
-/**
-* Application tokens that are in the process of exiting, but still
-* on screen for animations.
-*/
-final ArrayList<AppWindowToken> mExitingAppTokens = new ArrayList<AppWindowToken>();
+    /**
+     * AppWindowTokens in the Z order they were in at the start of an animation. Between
+     * animations this list is maintained in the exact order of mAppTokens. If tokens
+     * are added to mAppTokens during an animation an attempt is made to insert them at the same
+     * logical location in this list. Note that this list is always in sync with mWindows.
+     */
+    ArrayList<AppWindowToken> mAnimatingAppTokens = new ArrayList<AppWindowToken>();
 
-/**
-* List of window tokens that have finished starting their application,
-* and now need to have the policy remove their windows.
-*/
-final ArrayList<AppWindowToken> mFinishedStarting = new ArrayList<AppWindowToken>();
+    /**
+     * Application tokens that are in the process of exiting, but still
+     * on screen for animations.
+     */
+    final ArrayList<AppWindowToken> mExitingAppTokens = new ArrayList<AppWindowToken>();
 
-/**
-* Author: Onskreen
-* Date: 24/01/2011
-*
-* Rich tracking of Window Panels. Enables tracking of multiple groupIds
-* contained in the same Window Panel as seen with Activities which are
-* not marked as 'appFullScreen' that can be logically associated with
-* the WindowPanel from which they were launched, but actually have a distinct
-* groupId. Distinct groupIds should be associated with exactly one Window Panel.
-*/
-final ArrayList<WindowPanel> mWindowPanels = new ArrayList<WindowPanel>();
+    /**
+     * List of window tokens that have finished starting their application,
+     * and now need to have the policy remove their windows.
+     */
+    final ArrayList<AppWindowToken> mFinishedStarting = new ArrayList<AppWindowToken>();
 
-/**
-* Fake windows added to the window manager.  Note: ordered from top to
-* bottom, opposite of mWindows.
-*/
-final ArrayList<FakeWindowImpl> mFakeWindows = new ArrayList<FakeWindowImpl>();
+    /**
+     * Author: Onskreen
+     * Date: 24/01/2011
+     *
+     * Rich tracking of Window Panels. Enables tracking of multiple groupIds
+     * contained in the same Window Panel as seen with Activities which are
+     * not marked as 'appFullScreen' that can be logically associated with
+     * the WindowPanel from which they were launched, but actually have a distinct
+     * groupId. Distinct groupIds should be associated with exactly one Window Panel.
+     */
+    final ArrayList<WindowPanel> mWindowPanels = new ArrayList<WindowPanel>();
 
-/**
-* Windows that are being resized.  Used so we can tell the client about
-* the resize after closing the transaction in which we resized the
-* underlying surface.
-*/
-final ArrayList<WindowState> mResizingWindows = new ArrayList<WindowState>();
+    /**
+     * Fake windows added to the window manager.  Note: ordered from top to
+     * bottom, opposite of mWindows.
+     */
+    final ArrayList<FakeWindowImpl> mFakeWindows = new ArrayList<FakeWindowImpl>();
 
-/**
-* Windows whose animations have ended and now must be removed.
-*/
-final ArrayList<WindowState> mPendingRemove = new ArrayList<WindowState>();
+    /**
+     * Windows that are being resized.  Used so we can tell the client about
+     * the resize after closing the transaction in which we resized the
+     * underlying surface.
+     */
+    final ArrayList<WindowState> mResizingWindows = new ArrayList<WindowState>();
 
-/**
-* Used when processing mPendingRemove to avoid working on the original array.
-*/
-WindowState[] mPendingRemoveTmp = new WindowState[20];
+    /**
+     * Windows whose animations have ended and now must be removed.
+     */
+    final ArrayList<WindowState> mPendingRemove = new ArrayList<WindowState>();
 
-/**
-* Windows whose surface should be destroyed.
-*/
-final ArrayList<WindowState> mDestroySurface = new ArrayList<WindowState>();
+    /**
+     * Used when processing mPendingRemove to avoid working on the original array.
+     */
+    WindowState[] mPendingRemoveTmp = new WindowState[20];
 
-/**
-* Windows that have lost input focus and are waiting for the new
-* focus window to be displayed before they are told about this.
-*/
-ArrayList<WindowState> mLosingFocus = new ArrayList<WindowState>();
+    /**
+     * Windows whose surface should be destroyed.
+     */
+    final ArrayList<WindowState> mDestroySurface = new ArrayList<WindowState>();
 
-/**
-* This is set when we have run out of memory, and will either be an empty
-* list or contain windows that need to be force removed.
-*/
-ArrayList<WindowState> mForceRemoves;
+    /**
+     * Windows that have lost input focus and are waiting for the new
+     * focus window to be displayed before they are told about this.
+     */
+    ArrayList<WindowState> mLosingFocus = new ArrayList<WindowState>();
 
-/**
-* Windows that clients are waiting to have drawn.
-*/
-ArrayList<Pair<WindowState, IRemoteCallback>> mWaitingForDrawn
-    = new ArrayList<Pair<WindowState, IRemoteCallback>>();
+    /**
+     * This is set when we have run out of memory, and will either be an empty
+     * list or contain windows that need to be force removed.
+     */
+    ArrayList<WindowState> mForceRemoves;
 
-/**
-* Windows that have called relayout() while we were running animations,
-* so we need to tell when the animation is done.
-*/
-final ArrayList<WindowState> mRelayoutWhileAnimating = new ArrayList<WindowState>();
+    /**
+     * Windows that clients are waiting to have drawn.
+     */
+    ArrayList<Pair<WindowState, IRemoteCallback>> mWaitingForDrawn
+            = new ArrayList<Pair<WindowState, IRemoteCallback>>();
 
+    /**
+     * Windows that have called relayout() while we were running animations,
+     * so we need to tell when the animation is done.
+     */
+    final ArrayList<WindowState> mRelayoutWhileAnimating = new ArrayList<WindowState>();
 
-/**
-* Used when rebuilding window list to keep track of windows that have
-* been removed.
-*/
-WindowState[] mRebuildTmp = new WindowState[20];
+    /**
+     * Used when rebuilding window list to keep track of windows that have
+     * been removed.
+     */
+    WindowState[] mRebuildTmp = new WindowState[20];
 
-IInputMethodManager mInputMethodManager;
+    IInputMethodManager mInputMethodManager;
 
-final SurfaceSession mFxSession;
-Watermark mWatermark;
-StrictModeFlash mStrictModeFlash;
+    final SurfaceSession mFxSession;
+    Watermark mWatermark;
+    StrictModeFlash mStrictModeFlash;
 
-final float[] mTmpFloats = new float[9];
+    final float[] mTmpFloats = new float[9];
 
-boolean mDisplayReady;
-boolean mSafeMode;
-boolean mDisplayEnabled = false;
-boolean mSystemBooted = false;
-boolean mForceDisplayEnabled = false;
-boolean mShowingBootMessages = false;
+    boolean mDisplayReady;
+    boolean mSafeMode;
+    boolean mDisplayEnabled = false;
+    boolean mSystemBooted = false;
+    boolean mForceDisplayEnabled = false;
+    boolean mShowingBootMessages = false;
 
-String mLastANRState;
+    String mLastANRState;
 
-/** All DisplayDontents in the world, kept here */
-private SparseArray<DisplayContent> mDisplayContents = new SparseArray<DisplayContent>();
+    /** All DisplayDontents in the world, kept here */
+    private SparseArray<DisplayContent> mDisplayContents = new SparseArray<DisplayContent>();
 
-int mRotation = 0;
-int mForcedAppOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
-boolean mAltOrientation = false;
-ArrayList<IRotationWatcher> mRotationWatchers
-    = new ArrayList<IRotationWatcher>();
-int mDeferredRotationPauseCount;
+    int mRotation = 0;
+    int mForcedAppOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+    boolean mAltOrientation = false;
+    ArrayList<IRotationWatcher> mRotationWatchers
+            = new ArrayList<IRotationWatcher>();
+    int mDeferredRotationPauseCount;
 
-final Rect mSystemDecorRect = new Rect();
-int mSystemDecorLayer = 0;
-final Rect mScreenRect = new Rect();
+    final Rect mSystemDecorRect = new Rect();
+    int mSystemDecorLayer = 0;
+    final Rect mScreenRect = new Rect();
 
-boolean mTraversalScheduled = false;
-boolean mDisplayFrozen = false;
-boolean mWaitingForConfig = false;
-boolean mWindowsFreezingScreen = false;
-boolean mClientFreezingScreen = false;
-int mAppsFreezingScreen = 0;
-int mLastWindowForcedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+    boolean mTraversalScheduled = false;
+    boolean mDisplayFrozen = false;
+    boolean mWaitingForConfig = false;
+    boolean mWindowsFreezingScreen = false;
+    boolean mClientFreezingScreen = false;
+    int mAppsFreezingScreen = 0;
+    int mLastWindowForcedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 
-int mLayoutSeq = 0;
+    int mLayoutSeq = 0;
 
-int mLastStatusBarVisibility = 0;
+    int mLastStatusBarVisibility = 0;
 
-// State while inside of layoutAndPlaceSurfacesLocked().
-boolean mFocusMayChange;
+    // State while inside of layoutAndPlaceSurfacesLocked().
+    boolean mFocusMayChange;
 
-Configuration mCurConfiguration = new Configuration();
+    Configuration mCurConfiguration = new Configuration();
 
-// This is held as long as we have the screen frozen, to give us time to
-// perform a rotation animation when turning off shows the lock screen which
-// changes the orientation.
-PowerManager.WakeLock mScreenFrozenLock;
+    // This is held as long as we have the screen frozen, to give us time to
+    // perform a rotation animation when turning off shows the lock screen which
+    // changes the orientation.
+    PowerManager.WakeLock mScreenFrozenLock;
 
-// State management of app transitions.  When we are preparing for a
-// transition, mNextAppTransition will be the kind of transition to
-// perform or TRANSIT_NONE if we are not waiting.  If we are waiting,
-// mOpeningApps and mClosingApps are the lists of tokens that will be
-// made visible or hidden at the next transition.
-int mNextAppTransition = WindowManagerPolicy.TRANSIT_UNSET;
-int mNextAppTransitionType = ActivityOptions.ANIM_NONE;
-String mNextAppTransitionPackage;
-Bitmap mNextAppTransitionThumbnail;
-// Used for thumbnail transitions. True if we're scaling up, false if scaling down
-boolean mNextAppTransitionScaleUp;
-IRemoteCallback mNextAppTransitionCallback;
-int mNextAppTransitionEnter;
-int mNextAppTransitionExit;
-int mNextAppTransitionStartX;
-int mNextAppTransitionStartY;
-int mNextAppTransitionStartWidth;
-int mNextAppTransitionStartHeight;
-boolean mAppTransitionReady = false;
-boolean mAppTransitionRunning = false;
-boolean mAppTransitionTimeout = false;
-boolean mStartingIconInTransition = false;
-boolean mSkipAppTransitionAnimation = false;
-final ArrayList<AppWindowToken> mOpeningApps = new ArrayList<AppWindowToken>();
-final ArrayList<AppWindowToken> mClosingApps = new ArrayList<AppWindowToken>();
+    // State management of app transitions.  When we are preparing for a
+    // transition, mNextAppTransition will be the kind of transition to
+    // perform or TRANSIT_NONE if we are not waiting.  If we are waiting,
+    // mOpeningApps and mClosingApps are the lists of tokens that will be
+    // made visible or hidden at the next transition.
+    int mNextAppTransition = WindowManagerPolicy.TRANSIT_UNSET;
+    int mNextAppTransitionType = ActivityOptions.ANIM_NONE;
+    String mNextAppTransitionPackage;
+    Bitmap mNextAppTransitionThumbnail;
+    // Used for thumbnail transitions. True if we're scaling up, false if scaling down
+    boolean mNextAppTransitionScaleUp;
+    IRemoteCallback mNextAppTransitionCallback;
+    int mNextAppTransitionEnter;
+    int mNextAppTransitionExit;
+    int mNextAppTransitionStartX;
+    int mNextAppTransitionStartY;
+    int mNextAppTransitionStartWidth;
+    int mNextAppTransitionStartHeight;
+    boolean mAppTransitionReady = false;
+    boolean mAppTransitionRunning = false;
+    boolean mAppTransitionTimeout = false;
+    boolean mStartingIconInTransition = false;
+    boolean mSkipAppTransitionAnimation = false;
+    final ArrayList<AppWindowToken> mOpeningApps = new ArrayList<AppWindowToken>();
+    final ArrayList<AppWindowToken> mClosingApps = new ArrayList<AppWindowToken>();
 
-boolean mIsTouchDevice;
+    boolean mIsTouchDevice;
 
-final DisplayMetrics mDisplayMetrics = new DisplayMetrics();
-final DisplayMetrics mRealDisplayMetrics = new DisplayMetrics();
-final DisplayMetrics mTmpDisplayMetrics = new DisplayMetrics();
-final DisplayMetrics mCompatDisplayMetrics = new DisplayMetrics();
+    final DisplayMetrics mDisplayMetrics = new DisplayMetrics();
+    final DisplayMetrics mRealDisplayMetrics = new DisplayMetrics();
+    final DisplayMetrics mTmpDisplayMetrics = new DisplayMetrics();
+    final DisplayMetrics mCompatDisplayMetrics = new DisplayMetrics();
 
-final H mH = new H();
+    final H mH = new H();
 
-final Choreographer mChoreographer = Choreographer.getInstance();
+    final Choreographer mChoreographer = Choreographer.getInstance();
 
-WindowState mCurrentFocus = null;
-WindowState mLastFocus = null;
+    WindowState mCurrentFocus = null;
+    WindowState mLastFocus = null;
 
-/** This just indicates the window the input method is on top of, not
-* necessarily the window its input is going to. */
-WindowState mInputMethodTarget = null;
+    /** This just indicates the window the input method is on top of, not
+     * necessarily the window its input is going to. */
+    WindowState mInputMethodTarget = null;
 
-/** If true hold off on modifying the animation layer of mInputMethodTarget */
-boolean mInputMethodTargetWaitingAnim;
-int mInputMethodAnimLayerAdjustment;
+    /** If true hold off on modifying the animation layer of mInputMethodTarget */
+    boolean mInputMethodTargetWaitingAnim;
+    int mInputMethodAnimLayerAdjustment;
 
-WindowState mInputMethodWindow = null;
-final ArrayList<WindowState> mInputMethodDialogs = new ArrayList<WindowState>();
+    WindowState mInputMethodWindow = null;
+    final ArrayList<WindowState> mInputMethodDialogs = new ArrayList<WindowState>();
 
-boolean mHardKeyboardAvailable;
-boolean mHardKeyboardEnabled;
-OnHardKeyboardStatusChangeListener mHardKeyboardStatusChangeListener;
+    boolean mHardKeyboardAvailable;
+    boolean mHardKeyboardEnabled;
+    OnHardKeyboardStatusChangeListener mHardKeyboardStatusChangeListener;
 
-final ArrayList<WindowToken> mWallpaperTokens = new ArrayList<WindowToken>();
+    final ArrayList<WindowToken> mWallpaperTokens = new ArrayList<WindowToken>();
 
-// If non-null, this is the currently visible window that is associated
-// with the wallpaper.
-WindowState mWallpaperTarget = null;
-// If non-null, we are in the middle of animating from one wallpaper target
-// to another, and this is the lower one in Z-order.
-WindowState mLowerWallpaperTarget = null;
-// If non-null, we are in the middle of animating from one wallpaper target
-// to another, and this is the higher one in Z-order.
-private WindowState mUpperWallpaperTarget = null;
-int mWallpaperAnimLayerAdjustment;
-float mLastWallpaperX = -1;
-float mLastWallpaperY = -1;
-float mLastWallpaperXStep = -1;
-float mLastWallpaperYStep = -1;
-// This is set when we are waiting for a wallpaper to tell us it is done
-// changing its scroll position.
-WindowState mWaitingOnWallpaper;
-// The last time we had a timeout when waiting for a wallpaper.
-long mLastWallpaperTimeoutTime;
-// We give a wallpaper up to 150ms to finish scrolling.
-static final long WALLPAPER_TIMEOUT = 150;
-// Time we wait after a timeout before trying to wait again.
-static final long WALLPAPER_TIMEOUT_RECOVERY = 10000;
+    // If non-null, this is the currently visible window that is associated
+    // with the wallpaper.
+    WindowState mWallpaperTarget = null;
+    // If non-null, we are in the middle of animating from one wallpaper target
+    // to another, and this is the lower one in Z-order.
+    WindowState mLowerWallpaperTarget = null;
+    // If non-null, we are in the middle of animating from one wallpaper target
+    // to another, and this is the higher one in Z-order.
+    private WindowState mUpperWallpaperTarget = null;
+    int mWallpaperAnimLayerAdjustment;
+    float mLastWallpaperX = -1;
+    float mLastWallpaperY = -1;
+    float mLastWallpaperXStep = -1;
+    float mLastWallpaperYStep = -1;
+    // This is set when we are waiting for a wallpaper to tell us it is done
+    // changing its scroll position.
+    WindowState mWaitingOnWallpaper;
+    // The last time we had a timeout when waiting for a wallpaper.
+    long mLastWallpaperTimeoutTime;
+    // We give a wallpaper up to 150ms to finish scrolling.
+    static final long WALLPAPER_TIMEOUT = 150;
+    // Time we wait after a timeout before trying to wait again.
+    static final long WALLPAPER_TIMEOUT_RECOVERY = 10000;
 
-AppWindowToken mFocusedApp = null;
+    AppWindowToken mFocusedApp = null;
 
-PowerManagerService mPowerManager;
+    PowerManagerService mPowerManager;
 
-float mWindowAnimationScale = 1.0f;
-float mTransitionAnimationScale = 1.0f;
-float mAnimatorDurationScale = 1.0f;
+    float mWindowAnimationScale = 1.0f;
+    float mTransitionAnimationScale = 1.0f;
+    float mAnimatorDurationScale = 1.0f;
 
-final InputManagerService mInputManager;
-final DisplayManagerService mDisplayManagerService;
-final DisplayManager mDisplayManager;
+    final InputManagerService mInputManager;
+    final DisplayManagerService mDisplayManagerService;
+    final DisplayManager mDisplayManager;
 
-// Who is holding the screen on.
-Session mHoldingScreenOn;
-PowerManager.WakeLock mHoldingScreenWakeLock;
+    private boolean mForceDisableHardwareKeyboard = false;
 
-boolean mTurnOnScreen;
+    // Who is holding the screen on.
+    Session mHoldingScreenOn;
+    PowerManager.WakeLock mHoldingScreenWakeLock;
 
-DragState mDragState = null;
+    boolean mTurnOnScreen;
 
-/** Pulled out of performLayoutAndPlaceSurfacesLockedInner in order to refactor into multipl    * methods. */
+    DragState mDragState = null;
+
+    /** Pulled out of performLayoutAndPlaceSurfacesLockedInner in order to refactor into multiple
+     * methods. */
     class LayoutFields {
         static final int SET_UPDATE_ROTATION                = 1 << 0;
         static final int SET_WALLPAPER_MAY_CHANGE           = 1 << 1;
@@ -940,7 +943,7 @@ DragState mDragState = null;
                 com.android.internal.R.bool.config_sf_limitedAlpha);
         mDisplayManagerService = displayManager;
         mHeadless = displayManager.isHeadless();
-        
+        mPolicy = PolicyManager.makeNewWindowManager(device);
 
         mDisplayManager = (DisplayManager)context.getSystemService(Context.DISPLAY_SERVICE);
         mDisplayManager.registerDisplayListener(this, null);
@@ -982,7 +985,8 @@ DragState mDragState = null;
         mFxSession = new SurfaceSession();
         mAnimator = new WindowAnimator(this);
 
-        
+        mForceDisableHardwareKeyboard = context.getResources().getBoolean(
+                com.android.internal.R.bool.config_forceDisableHardwareKeyboard);
 
         initPolicy(uiHandler);
 
@@ -10125,7 +10129,10 @@ DragState mDragState = null;
             }
 
             // Determine whether a hard keyboard is available and enabled.
-            boolean hardKeyboardAvailable = config.keyboard != Configuration.KEYBOARD_NOKEYS;
+            boolean hardKeyboardAvailable = false;
+            if (!mForceDisableHardwareKeyboard) {
+                hardKeyboardAvailable = config.keyboard != Configuration.KEYBOARD_NOKEYS;
+            }
             if (hardKeyboardAvailable != mHardKeyboardAvailable) {
                 mHardKeyboardAvailable = hardKeyboardAvailable;
                 mHardKeyboardEnabled = hardKeyboardAvailable;

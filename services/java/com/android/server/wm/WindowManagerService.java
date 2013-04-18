@@ -235,7 +235,7 @@ static final int LAYOUT_REPEAT_THRESHOLD = 4;
 */
 static final boolean DEBUG_WP_POSITIONS = true;
 static final boolean DEBUG_WP_GROUPING = true;
-static final boolean DEBUG_WP_CONFIG = false;
+static final boolean DEBUG_WP_CONFIG = true;
 static final boolean DEBUG_CORNERSTONE = true;
 
 

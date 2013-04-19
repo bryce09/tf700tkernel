@@ -234,9 +234,9 @@ static final int LAYOUT_REPEAT_THRESHOLD = 4;
 * Debug flag for cornerstone specific logic
 */
 static final boolean DEBUG_WP_POSITIONS = true;
-static final boolean DEBUG_WP_GROUPING = true;
-static final boolean DEBUG_WP_CONFIG = true;
-static final boolean DEBUG_CORNERSTONE = true;
+static final boolean DEBUG_WP_GROUPING = false;
+static final boolean DEBUG_WP_CONFIG = false;
+static final boolean DEBUG_CORNERSTONE = false;
 
 
 
@@ -329,6 +329,9 @@ private static final String SYSTEM_DEBUGGABLE = "ro.debuggable";
 final private KeyguardDisableHandler mKeyguardDisableHandler;
 
 private final boolean mHeadless;
+
+// Height of Status Bar in order to scale Cornerstone Panels properly
+private static int mStatusBarHeight = 0;
 
 
 private static final float THUMBNAIL_ANIMATION_DECELERATE_FACTOR = 1.5f;
@@ -1003,12 +1006,26 @@ DragState mDragState = null;
          * Date: 20/07/2011
          *
          * populate the layout rect constants for portrait and landscape modes.
+	bryce
          */
-        XmlResourceParser xpp = null;
-        WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+	WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+	XmlResourceParser xpp = null;
+        
         Display display = wm.getDefaultDisplay();
         final int dw = display.getWidth();
         final int dh = display.getHeight();
+
+	/**
+	* bryce
+	* get the height of the status bar programmatically
+	* fixes: statusbar cuts of cornerstone windows at the top
+	*/
+        int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+        	mStatusBarHeight = context.getResources().getDimensionPixelSize(resourceId);
+        }
+      
+        
         try {
             Resources res = context.getResources();
             xpp = res.getXml(com.android.internal.R.xml.cornerstone);
@@ -9195,6 +9212,7 @@ DragState mDragState = null;
 		return rect;
     }
 
+                
     /**
      * Author: Onskreen
      * Date: 12/01/2011
@@ -9263,7 +9281,7 @@ DragState mDragState = null;
         }
 
 		Rect emptyRect = new Rect(0, 0, 0, 0);
-		Rect fullDisplayRect = new Rect(0,0,displayWidth,displayHeight);
+		Rect fullDisplayRect = new Rect(0,mStatusBarHeight,displayWidth,displayHeight);
 		//during startup the display may not yet be configured
 /*		if(mDisplay == null) {
 			return emptyRect;
@@ -9311,7 +9329,7 @@ DragState mDragState = null;
                         mainPanelWidth = displayWidth - (mCornerstoneHandlerLandscapeWidth);
                         break;
                 }
-                finalRect = new Rect(0, 0, mainPanelWidth, mainPanelHeight);
+                finalRect = new Rect(0, mStatusBarHeight, mainPanelWidth, mainPanelHeight);
             } else if(orientation == Configuration.ORIENTATION_PORTRAIT){
                 mainPanelWidth = displayWidth;
                 switch(csState) {
@@ -9341,7 +9359,7 @@ DragState mDragState = null;
             int csEndHeight = 0;
 			if(orientation == Configuration.ORIENTATION_LANDSCAPE ||
 							orientation == Configuration.ORIENTATION_UNDEFINED){
-				csStartHeight = 0;
+				csStartHeight = mStatusBarHeight;
 				csEndHeight = displayHeight;
 				switch(csState) {
 					case RUNNING_OPEN:
@@ -9387,7 +9405,7 @@ DragState mDragState = null;
                 if(DEBUG_WP_CONFIG) {
                     Log.w(TAG, "\tConfirmed: Orientation: landscape or undefined");
                 }
-                panelStartHeight = (index * (mCornerstonePanelLandscapeHeight)) + ((index + 1) * mCornerstoneAppHeaderLandscapeHeight);
+                panelStartHeight = (index * (mCornerstonePanelLandscapeHeight)) + ((index + 1) * mCornerstoneAppHeaderLandscapeHeight) + mStatusBarHeight;
                 panelEndHeight = panelStartHeight + mCornerstonePanelLandscapeHeight;
                 switch(csState) {
                     case RUNNING_OPEN:

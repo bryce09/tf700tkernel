@@ -385,6 +385,13 @@ public interface IActivityManager extends IInterface {
      */
     public void setCornerstoneState(boolean open) throws RemoteException;
 
+	/**
+	* bryce
+	*
+	* set cornerstone layout width in landscape
+	*/
+	public void setCornerstoneLayoutWide(int width) throws RemoteException;
+
     /**
      * Author: Onskreen
      * Date: 28/02/2011

@@ -4254,6 +4254,19 @@ class ActivityManagerProxy implements IActivityManager
         reply.recycle();
     }
 
+	/*
+	* bryce
+	*/
+	public void setCornerstoneLayoutWide(int width) throws RemoteException {
+        Parcel data = Parcel.obtain();
+        Parcel reply = Parcel.obtain();
+        data.writeInterfaceToken(IActivityManager.descriptor);
+        data.writeInt(width);
+        mRemote.transact(CORNERSTONE_STATE_TRANSACTION, data, reply, 0);
+        reply.readException();
+        data.recycle();
+        reply.recycle();
+    }
     /**
      * Author: Onskreen
      * Date: 22/02/2011

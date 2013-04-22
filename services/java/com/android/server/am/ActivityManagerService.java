@@ -170,6 +170,11 @@ import dalvik.system.Zygote;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+//bryce
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+
+
 public final class ActivityManagerService extends ActivityManagerNative
         implements Watchdog.Monitor, BatteryStatsImpl.BatteryCallback {
     private static final String USER_DATA_DIR = "/data/user/";
@@ -309,7 +314,7 @@ public final class ActivityManagerService extends ActivityManagerNative
      * Maximum number of allowed panels in the cornerstone. It's not clear whether this should
      * be hardcoded here or variable and come from the cornerstone app?
      */
-    int mMaxNumCornerstonePanels = 2;
+    static int mMaxNumCornerstonePanels = 1;
 
     /**
      * Author: Onskreen
@@ -1516,6 +1521,7 @@ public final class ActivityManagerService extends ActivityManagerNative
     public void setWindowManager(WindowManagerService wm) {
         mWindowManager = wm;
     }
+	
 
     public static final Context main(int factoryTest) {
         AThread thr = new AThread();
@@ -1547,6 +1553,7 @@ public final class ActivityManagerService extends ActivityManagerNative
         //m.mMainStack = new ActivityStack(m, context, true);
         m.mMainStack = new ActivityStack(m, context, true, false, -1);
 
+	
         /**
          * Author: Onskreen
          * Date: 12/01/2011
@@ -16966,6 +16973,16 @@ public final class ActivityManagerService extends ActivityManagerNative
         }
     }
 
+	//bryce
+	// set Cornerstone layout width to half the screen!
+
+	public void setCornerstoneLayoutWide(int width) {
+		final long origId = Binder.clearCallingIdentity();
+		
+		mWindowManager.mCornerstonePanelLandscapeWidth = width;
+		
+		Binder.restoreCallingIdentity(origId);
+	}
 
     /**
      * Author: Onskreen

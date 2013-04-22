@@ -189,6 +189,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+//bryce
+
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+
+
 /** {@hide} */
 public class WindowManagerService extends IWindowManager.Stub
         implements Watchdog.Monitor, WindowManagerPolicy.WindowManagerFuncs,
@@ -330,8 +336,9 @@ final private KeyguardDisableHandler mKeyguardDisableHandler;
 
 private final boolean mHeadless;
 
-// Height of Status Bar in order to scale Cornerstone Panels properly
+// Height of Status Bar in order to scale Cornerstone Panels properly bryce
 private static int mStatusBarHeight = 0;
+private boolean mThreeWindows = false;
 
 
 private static final float THUMBNAIL_ANIMATION_DECELERATE_FACTOR = 1.5f;
@@ -827,8 +834,10 @@ DragState mDragState = null;
      *
      * Cornerstone Panel Constants. These are ideal values based on full layout in landscape mode.
      */
-    int mCornerstonePanelLandscapeWidth;
+//bryce
+    public int mCornerstonePanelLandscapeWidth = 600;
     int mCornerstonePanelLandscapeHeight;
+
     int mCornerstoneHandlerLandscapeWidth;
     int mCornerstoneAppHeaderLandscapeHeight;
 
@@ -1025,7 +1034,11 @@ DragState mDragState = null;
         	mStatusBarHeight = context.getResources().getDimensionPixelSize(resourceId);
         }
       
-        
+        /**
+	* bryce
+	* get the number of requested windows in panel required by settings app
+	*/
+
         try {
             Resources res = context.getResources();
             xpp = res.getXml(com.android.internal.R.xml.cornerstone);
@@ -1047,7 +1060,8 @@ DragState mDragState = null;
                                  tag = xpp.getName();
                                  if(tag.equals("width")){
                                     xpp.next();
-                                    mCornerstonePanelLandscapeWidth = Integer.parseInt(xpp.getText());
+                                    //mCornerstonePanelLandscapeWidth = Integer.parseInt(xpp.getText());
+					Slog.v(TAG, "bryce: CornerstonePanelLandscapeWidth: " + mCornerstonePanelLandscapeWidth);
                                     xpp.next();
                                  }
                                  xpp.next();
@@ -1158,6 +1172,7 @@ DragState mDragState = null;
          */
         mPolicy.enableKeyguard(false);
     }
+
 
     private Context getUiContext() {
         if (mUiContext == null) {
@@ -8455,6 +8470,11 @@ DragState mDragState = null;
         }
     }
 
+	//bryce
+	public void setCornerstoneThreeWindows(boolean threewindows) {
+		mThreeWindows = threewindows;
+	}
+
     /**
      * Author: Onskreen
      * Date: 01/01/2012
@@ -9405,8 +9425,16 @@ DragState mDragState = null;
                 if(DEBUG_WP_CONFIG) {
                     Log.w(TAG, "\tConfirmed: Orientation: landscape or undefined");
                 }
-                panelStartHeight = (index * (mCornerstonePanelLandscapeHeight)) + ((index + 1) * mCornerstoneAppHeaderLandscapeHeight) + mStatusBarHeight;
-                panelEndHeight = panelStartHeight + mCornerstonePanelLandscapeHeight;
+		/**
+		* bryce
+		* set the size of the rect depending on number of requested panels */
+		
+        /*        	panelStartHeight = (index * (mCornerstonePanelLandscapeHeight)) + ((index + 1) * mCornerstoneAppHeaderLandscapeHeight) + mStatusBarHeight;
+			panelEndHeight = panelStartHeight + mCornerstonePanelLandscapeHeight; */
+		
+			panelStartHeight = mStatusBarHeight + mCornerstoneAppHeaderLandscapeHeight;
+			panelEndHeight = displayHeight;
+		
                 switch(csState) {
                     case RUNNING_OPEN:
                         panelStartWidth = displayWidth - (mCornerstonePanelLandscapeWidth);

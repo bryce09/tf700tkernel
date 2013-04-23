@@ -9387,7 +9387,7 @@ DragState mDragState = null;
 						break;
 					case RUNNING_CLOSED:
 						csStartWidth = displayWidth - (mCornerstoneHandlerLandscapeWidth);
-						csEndWidth = displayWidth + mCornerstonePanelLandscapeWidth;
+						csEndWidth = displayWidth; // bryce1 + mCornerstonePanelLandscapeWidth;
 						break;
 				}
                 finalRect = new Rect(csStartWidth, csStartHeight, csEndWidth, csEndHeight);

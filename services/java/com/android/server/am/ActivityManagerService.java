@@ -16980,6 +16980,7 @@ public final class ActivityManagerService extends ActivityManagerNative
 		final long origId = Binder.clearCallingIdentity();
 		
 		mWindowManager.mCornerstonePanelLandscapeWidth = width;
+		Log.w(TAG, "bryce: width: " + width);
 		
 		Binder.restoreCallingIdentity(origId);
 	}

@@ -1831,7 +1831,18 @@ public abstract class ActivityManagerNative extends Binder implements IActivityM
             reply.writeNoException();
             return true;
         }
+	/**
+	* bryce
+	* Cornerstone specific transaction, change panel width
+	*/
 
+	case CORNERSTONE_PANEL_WIDTH: {
+            data.enforceInterface(IActivityManager.descriptor);
+            int width = data.readInt();
+            setCornerstoneLayoutWide(width);
+            reply.writeNoException();
+            return true;
+        }
         /**
          * Author: Onskreen
          * Date: 22/02/2011
@@ -4262,7 +4273,7 @@ class ActivityManagerProxy implements IActivityManager
         Parcel reply = Parcel.obtain();
         data.writeInterfaceToken(IActivityManager.descriptor);
         data.writeInt(width);
-        mRemote.transact(CORNERSTONE_STATE_TRANSACTION, data, reply, 0);
+        mRemote.transact(CORNERSTONE_PANEL_WIDTH, data, reply, 0);
         reply.readException();
         data.recycle();
         reply.recycle();

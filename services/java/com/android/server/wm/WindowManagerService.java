@@ -189,10 +189,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-//bryce
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 
 
 /** {@hide} */
@@ -1061,7 +1058,7 @@ DragState mDragState = null;
                                  if(tag.equals("width")){
                                     xpp.next();
                                     //mCornerstonePanelLandscapeWidth = Integer.parseInt(xpp.getText());
-					Slog.v(TAG, "bryce: CornerstonePanelLandscapeWidth: " + mCornerstonePanelLandscapeWidth);
+					Log.w(TAG, "bryce: xml CornerstonePanelLandscapeWidth: " + mCornerstonePanelLandscapeWidth);
                                     xpp.next();
                                  }
                                  xpp.next();
@@ -9254,6 +9251,8 @@ DragState mDragState = null;
         final DisplayContent displayContent = getDefaultDisplayContentLocked();
         int mBaseDisplayWidth = displayContent.mBaseDisplayWidth , mBaseDisplayHeight = displayContent.mBaseDisplayHeight;
         
+	Log.w(TAG, "bryce: PanelLandscapeWidth: " + mCornerstonePanelLandscapeWidth);
+
         int fullWidth, fullHeight;
         if(orientation == Configuration.ORIENTATION_LANDSCAPE ||
                 orientation == Configuration.ORIENTATION_SQUARE ||

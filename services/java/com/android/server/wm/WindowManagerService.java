@@ -1165,9 +1165,10 @@ DragState mDragState = null;
          * Author: Onskreen
          * Date: 20/01/2011
          *
-         * Turn off the keyguard window which is active by default Release
+         * Turn off the keyguard window which is active by default Release bryce 
+	mPolicy.enableKeyguard(false);
          */
-        mPolicy.enableKeyguard(false);
+        mPolicy.enableKeyguard(true);
     }
 
 
@@ -9441,7 +9442,7 @@ DragState mDragState = null;
                         break;
                     case RUNNING_CLOSED:
                         panelStartWidth = displayWidth;
-                        panelEndWidth = displayWidth + mCornerstonePanelLandscapeWidth;
+                        panelEndWidth = displayWidth; //bryce + mCornerstonePanelLandscapeWidth;
                         break;
                 }
                 finalRect = new Rect(panelStartWidth, panelStartHeight, panelEndWidth, panelEndHeight);

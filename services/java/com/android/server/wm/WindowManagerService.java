@@ -9441,7 +9441,7 @@ DragState mDragState = null;
                         panelEndWidth = displayWidth;
                         break;
                     case RUNNING_CLOSED:
-                        panelStartWidth = displayWidth;
+                        panelStartWidth = displayWidth - mCornerstoneHandlerLandscapeWidth;
                         panelEndWidth = displayWidth; //bryce + mCornerstonePanelLandscapeWidth;
                         break;
                 }
